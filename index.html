@@ -397,7 +397,10 @@ M.onclick=e=>{if(e.target===M)M.classList.remove("open")};
 $("go").onclick=()=>{const fn=$("fn").value.trim(),ln=$("ln").value.trim(),em=$("em").value.trim();
 if(!fn||!ln||!/^\S+@\S+\.\S+$/.test(em)){$("err").textContent="Vyplň prosím jméno, příjmení a platný e-mail.";return}
 if(!$("ck").checked){$("err").textContent="Je potřeba souhlas se zpracováním osobních údajů.";return}
-M.classList.remove("open");show(true)};
+const b=$("go");b.disabled=true;
+const ML="https://assets.mailerlite.com/jsonp/2061164/forms/200099603677185737/subscribe";
+const fd=new URLSearchParams({"fields[name]":fn,"fields[last_name]":ln,"fields[email]":em,"ml-submit":"1","anticsrf":"true"});
+Promise.race([fetch(ML,{method:"POST",mode:"no-cors",body:fd}),new Promise(r=>setTimeout(r,2500))]).catch(()=>{}).then(()=>{b.disabled=false;M.classList.remove("open");show(true)})};
 function show(t){$("main").style.display=t?"none":"";$("thanks").style.display=t?"block":"none";
 try{location.hash=t?"dekujeme":""}catch(e){}scrollTo(0,0)}
 if(location.hash==="#dekujeme")show(true);
